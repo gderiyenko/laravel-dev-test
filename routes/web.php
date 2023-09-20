@@ -29,4 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// cashier webhook
+Route::post(
+    '/stripe/webhook',
+    [App\Http\Controllers\WebhookController::class, 'handleWebhook']
+)->name('cashier.webhook');
+
 require __DIR__.'/auth.php';
