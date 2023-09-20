@@ -5,7 +5,7 @@
     @include('components.header')
 
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="sm:max-w-md mx-auto">
         @csrf
 
         <!-- Email Address -->
