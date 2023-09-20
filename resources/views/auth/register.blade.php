@@ -1,4 +1,7 @@
 <x-guest-layout>
+
+    @include('components.header')
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
