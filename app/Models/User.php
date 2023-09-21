@@ -52,4 +52,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Purchace::class);
     }
+
+    /**
+     * Set stripe customer id, when user is created.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $user->createAsStripeCustomer();
+        });
+    }
 }

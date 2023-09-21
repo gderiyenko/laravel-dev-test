@@ -48,7 +48,8 @@ class StripeService
                 'quantity' => 1,
             ]],
 
-            'customer_email' => $user->email,
+            'customer' => $user->stripe_id,
+            // 'customer_email' => $user->email,
 
             'locale' => 'en',
 
@@ -63,4 +64,17 @@ class StripeService
         return $session->url;
     }
 
+    /**
+     * Reveal all purchases from stripe by user.
+     */
+    public function getPayments(User $user)
+    {
+        // get last 4 digits of card
+        $charges = $this->stripe->charges->all(['customer' => $user->stripe_id]);
+
+        // return receipt_urls
+        return collect($charges->data)->map(function ($charge) {
+            return collect($charge)->only('receipt_url', 'id');
+        })->toArray();
+    }
 }

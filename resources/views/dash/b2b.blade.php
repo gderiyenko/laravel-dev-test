@@ -15,7 +15,17 @@
             <div class="p-6 text-gray-900 dark:text-gray-100">
                 {{ __("B2B Purchase Details:") }}
                 <br>
-                {{ auth()->user()->purchaces->first()->last_digits ?? 'No purchaces yet' }}
+                @if ($receipts)
+                    {{ count($receipts) }} records found
+                    <br>
+                    @foreach ($receipts as $receipt)
+                        <a class="btn" onclick="window.location=`{{ $receipt['receipt_url'] }}`">
+                            {{ $receipt['id'] }}
+                        </a>
+                    @endforeach
+                @else 
+                    No data
+                @endif
             </div>
         </div>
     </div>

@@ -24,8 +24,10 @@ Route::get('/dashboard', function () {
         return view('dashboard')->with(compact('users'));
     }
 
+    $receipts = (new App\Services\StripeService())->getPayments(auth()->user());
+
     // return with all request() data
-    return view('dashboard')->with(request()->all());
+    return view('dashboard')->with(request()->all())->with(compact('receipts'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
