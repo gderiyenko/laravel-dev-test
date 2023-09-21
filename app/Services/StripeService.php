@@ -1,34 +1,66 @@
 <?php
 
-/**
- * Stripe service class.
- * 
- * Implements the Stripe API.
- */
-
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+/**
+ * StripeService class.
+ * 
+ * Implements use-cases for system Stripe API usage.
+ */
 
 class StripeService
 {
-    protected $key;
-    protected $plans;
+    protected $stripe;
+    protected $products;
 
     public function __construct()
     {
-        $this->key = config('stripe.secret');
-        $this->key = config('stripe.plans');
+        $this->stripe = new \Stripe\StripeClient(config('stripe.credentials.secret'));
+        $this->products = config('stripe.products');
     }
 
     /**
-     * Redirect user to Stripe checkout page.
+     * Generate checkout link for [user, product] pair.
      * 
+     * @param User $user
+     * @param string $product_id
+     * 
+     * @return string
      */
-    public function checkout(User $user, string $plan)
+    public function getCheckoutLink(User $user, string $product_id) : string
     {
-        
+        $user_id = $user->id;
+        $product = $this->products[$product_id];
+        $session_token = Hash::make($user_id . $product_id . time());
+
+        // save session_token
+        $user->update(['payment_session_token' => $session_token]);
+
+        // buy product
+        $session = $this->stripe->checkout->sessions->create([
+            'mode' => 'payment',
+
+            'line_items' => [[
+                'price' => $product['price_id'],
+                'quantity' => 1,
+            ]],
+
+            'customer_email' => $user->email,
+
+            'locale' => 'en',
+
+            'payment_method_types' => ['card', /* other payment methods */],
+
+            // callback
+            'success_url' => route('stripe.success') . '?product_id=' . $product_id . '&user_id=' . $user_id . '&payment_session_token=' . $session_token,
+            'cancel_url' => route('stripe.cancel'),
+        ]);
+
+        // Return link
+        return $session->url;
     }
 
 }

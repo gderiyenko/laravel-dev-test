@@ -8,3 +8,7 @@
     {{-- Load template based on user's role --}}
     @include('dash.' . auth()->user()->role)
 </x-app-layout>
+
+@include('notifications.dashboard-welcome')
+@include('notifications.dashboard-successful-payment')
+@include('notifications.dashboard-failed-payment')

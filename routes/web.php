@@ -19,8 +19,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $users = App\Models\User::all();
-    return view('dashboard')->with(compact('users'));
+    if (auth()->user()->role == 'admin') {
+        $users = App\Models\User::all();
+        return view('dashboard')->with(compact('users'));
+    }
+
+    // return with all request() data
+    return view('dashboard')->with(request()->all());
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -29,10 +34,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// cashier webhook
-Route::post(
-    '/stripe/webhook',
-    [App\Http\Controllers\WebhookController::class, 'handleWebhook']
-)->name('cashier.webhook');
+
+// Stripe
+Route::middleware('auth')->group(function () {
+    Route::post('/stripe/checkout', [App\Http\Controllers\StripeController::class, 'checkout'] )->name('stripe.checkout');
+    Route::get('/stripe/success', [App\Http\Controllers\StripeController::class, 'success'] )->name('stripe.success');
+    Route::get('/stripe/cancel', [App\Http\Controllers\StripeController::class, 'cancel'] )->name('stripe.cancel');
+});
+Route::post('/stripe/webhook', [App\Http\Controllers\StripeController::class, 'handleWebhook'])->name('stripe.webhook');
+
+
 
 require __DIR__.'/auth.php';

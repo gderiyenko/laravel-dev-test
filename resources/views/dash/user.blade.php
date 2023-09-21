@@ -40,7 +40,8 @@
 
 {{-- to payment --}}
 <div class="container mx-auto w-50 p-5">
-    <form class="items-center justify-center mt-4">
+    <form class="items-center justify-center mt-4" method="POST" action="{{ route('stripe.checkout') }}">
+        @csrf
 
         {{-- Selected plan --}}
         <div class="card mx-auto mb-2">
@@ -49,7 +50,7 @@
                 System will redirect you to Stripe Payment on <span id="selected" class="font-bold">B2B</span>
                 plan.</span>
         </div>
-        <input type="hidden" name="plan" value="B2B" />
+        <input type="hidden" name="product" value="B2B" />
 
         <button class="btn btn-neutral">
             <ion-icon name="card-outline" class="text-base-100" size="large" style="color: white;"></ion-icon>
@@ -79,7 +80,7 @@
             $("#selected").text(selectedPlan);
 
             // Change value in hidden input
-            $("input[name='plan']").val(selectedPlan);
+            $("input[name='product']").val(selectedPlan);
         });
     </script>
 @endPushOnce

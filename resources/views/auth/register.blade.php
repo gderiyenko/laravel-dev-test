@@ -44,7 +44,7 @@
                 <ion-icon name="information-circle-outline" size="small" class="mr-2"></ion-icon>
                 Pass your contact info, and system will redirect you to Stripe Payment on <span id="selected" class="font-bold">B2B</span> plan.</span>
         </div>
-        <input type="hidden" name="plan" value="B2B" />
+        <input type="hidden" name="product" value="B2B" />
 
         <!-- Name -->
         <div>
@@ -106,6 +106,6 @@
         $("#selected").text(selectedPlan);
 
         // Change value in hidden input
-        $("input[name='plan']").val(selectedPlan);
+        $("input[name='product']").val(selectedPlan);
     });
 </script>
