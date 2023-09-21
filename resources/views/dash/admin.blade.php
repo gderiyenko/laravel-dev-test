@@ -23,7 +23,7 @@
                             <th class="px-4 py-2">Name</th>
                             <th class="px-4 py-2">Email</th>
                             <th class="px-4 py-2">Role</th>
-                            <th class="px-4 py-2">4 digits</th>
+                            <th class="px-4 py-2">Payment</th>
                             <th class="px-4 py-2">Created at</th>
                             <th class="px-4 py-2">Updated at</th>
                         </tr>
@@ -35,7 +35,11 @@
                                 <td class="border px-4 py-2">{{ $user->name }}</td>
                                 <td class="border px-4 py-2">{{ $user->email }}</td>
                                 <td class="border px-4 py-2">{{ $user->role }}</td>
-                                <td class="border px-4 py-2">{{ $user->pm_last_four }}</td>
+                                {{-- open admin.checkLastPayment in a new tab --}}
+                                <td class="border px-4 py-2">
+                                    @if ($user->stripe_id && in_array($user->role, ['B2B', 'B2C']))
+                                        <button class="btn" onclick="window.open('{{ route('admin.checkLastPayment', ['user_id' => $user->id]) }}', '_blank')">Payment Info</button>
+                                    @endif
                                 <td class="border px-4 py-2">{{ $user->created_at }}</td>
                                 <td class="border px-4 py-2">{{ $user->updated_at }}</td>
                             </tr>
