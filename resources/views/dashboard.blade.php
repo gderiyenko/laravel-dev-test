@@ -6,7 +6,7 @@
     </x-slot>
 
     {{-- Load template based on user's role --}}
-    @include('dash.' . auth()->user()->role)
+    @include('dash.' . strtolower(auth()->user()->role))
 </x-app-layout>
 
 @include('notifications.dashboard-welcome')
